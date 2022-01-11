@@ -2,7 +2,7 @@ clear;
 a=6378137;
 e2=0.00669437999013;
 %wczytanie pliku z danymi punktami polo¿enia samolotu w uk³adzie phi,lambda, h
-load('C:\moje_pliki\Geoinformatyka - rok II\semestr 3\Wybrane zagadnienia geodezji wy¿szej\3 raz\projekt1\matlab\lot21.txt');
+load('C:\moje_pliki\git_WZGW\WZGW---Patrycja-Tatar\lot21.txt');
 %wsp samolotu
 phi_samolot=lot21(:,1);
 lambda_samolot=lot21(:,2);
@@ -50,13 +50,13 @@ geobasemap landcover
 %geoscatter(phi_samolot,lambda_samolot,50,'.r');
 
 % wykres neu
-plot3(n,e,u);
-grid on
-box on
-title('Lot w uk³adzie wspó³rzêdnych (n,e,u)');
-xlabel('n');
-ylabel('e');
-zlabel('u');
+%plot3(n,e,u);
+%grid on
+%box on
+%title('Lot w uk³adzie wspó³rzêdnych (n,e,u)');
+%xlabel('n');
+%ylabel('e');
+%zlabel('u');
 
 % wykres A(z)
 %plot(zenitana_odleglosc,azymuty);
