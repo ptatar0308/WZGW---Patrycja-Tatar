@@ -1,6 +1,7 @@
 clear;
 a=6378137;
 e2=0.00669437999013;
+
 %wczytanie pliku z danymi punktami polo¿enia samolotu w uk³adzie phi,lambda, h
 load('C:\moje_pliki\git_WZGW\WZGW---Patrycja-Tatar\lot21.txt');
 %wsp samolotu
@@ -35,19 +36,23 @@ macierz_neu = macierz_do_transpozycji * macierz_delt;
 n=macierz_neu(1,:);
 e=macierz_neu(2,:);
 u=macierz_neu(3,:);
-%obserwacje w uk³adzie „przestrzennym biegunowym"
+
 azymuty=atand(e./n);
 skosna_odleglosc=(n.^2+e.^2+u.^2).^(0.5);
 zenitana_odleglosc=acosd(u./skosna_odleglosc);
 
-%znalezienie punktu, gdzie samolot zniknie za lini¹ horyzontu(brak takiego punktu)
-
 %tworzenie map i wykresów
 
-% mapa trasu lotu
-geoscatter(phi_samolot,lambda_samolot,10, 'xr');
-geobasemap landcover
-%geoscatter(phi_samolot,lambda_samolot,50,'.r');
+% wykres lotu w uk³adzie kartezjañskim
+%plot3(x_samolot,y_samolot,z_samolot);
+%grid on
+%box on
+%hold on
+%plot3(x_lotnisko,y_lotnisko,z_lotnisko,'gx');
+%xlabel('x');
+%ylabel('y');
+%zlabel('z');
+%title('Lot w uk³adzie kartezjañskim (x,y,z)');
 
 % wykres neu
 %plot3(n,e,u);
@@ -66,13 +71,7 @@ geobasemap landcover
 %ylabel('azymut');
 %title('zale¿noœæ A(z)');
 
-% wykres lotu w uk³adzie kartezjañskim
-%plot3(x_samolot,y_samolot,z_samolot);
-%grid on
-%box on
-%hold on
-%plot3(x_lotnisko,y_lotnisko,z_lotnisko,'gx');
-%xlabel('x');
-%ylabel('y');
-%zlabel('z');
-%title('Lot w uk³adzie kartezjañskim (x,y,z)');
+% mapa trasu lotu
+geoscatter(phi_samolot,lambda_samolot,10, 'xr');
+geobasemap landcover
+%geoscatter(phi_samolot,lambda_samolot,50,'.r');
