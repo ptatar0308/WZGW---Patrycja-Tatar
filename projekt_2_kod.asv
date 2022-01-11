@@ -41,8 +41,8 @@ deklin = de_st+(de_min/60)+(de_s/3600);
 
 %wspolrzedne Buenos Aires (pó³kula po³udniowa)
 %(strefa czasowa UTC-3:00)
-lambda_1 = -58.3772300;
-phi_1 = -34.6131500;
+%lambda_1 = -58.3772300;
+%phi_1 = -34.6131500;
 
 
 %Przeliczenie czasu s³onecznego UT na czas gwiazdowy S oraz obliczenie k¹ta godzinnego
@@ -70,23 +70,25 @@ Z = acosd(sind(phi_1).*sind(deklin)+cosd(phi_1).*cosd(deklin).*cosd(t));
 Az = atand(-cosd(deklin).*sind(t)./(cosd(phi_1).*sind(deklin)-sind(phi_1).*cosd(deklin).*cosd(t)));
 
 %dla Warszaw
-%for i = 1:40
+for i = 1:40
+    Az(i) = Az(i)+180;
+end
+for i = 94:96
+    Az(i) = Az(i)+180;
+end
+
+%dla Buenos Aires
+%for i = 1:11
 %    Az(i) = Az(i)+180;
 %end
-%for i = 94:96
+%for i = 69:96
 %    Az(i) = Az(i)+180;
 %end
 
-%dla Buenos Aires
-for i = 1:11
-    Az(i) = Az(i)+180;
-end
-for i = 69:96
-    Az(i) = Az(i)+180;
-end
 
 %wysokosc
 H = 90 - Z;
+
 
 %wykres zaleznosci wysokosci od czasu;
 %plot(h,H);
