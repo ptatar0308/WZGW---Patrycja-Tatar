@@ -1,3 +1,5 @@
+clear;
+
 nr = 13;
 %nr = randi(15,1,1)
 
@@ -22,7 +24,7 @@ fi_D = deg2rad(fi_D);
 lambda_D = 21+(15/60);
 lambda_D = deg2rad(lambda_D);
 
-% obliczeniee punktu œredniej szerokoœci
+% obliczenie punktu œredniej szerokoœci
 fi_ss = (fi_B+fi_C)/2;
 lambda_ss = (lambda_B+lambda_C)/2;
  
@@ -32,20 +34,18 @@ e2=0.00669437999013;
  
 %% algorytm Vincentego
 
-% b - krótsza pó³oœ elipsoidy, f - sp³aszczenie elipsoidy, U - szerokoœæ zredukowana
-b = a * sqrt(1-e2);
-f = 1 - b/a;
-del_lambda = lambda_C - lambda_B;
-Ub = atan((1-f)*tan(fi_B));
+b = a * sqrt(1-e2);                 % b - krótsza pó³oœ elipsoidy
+f = 1 - b/a;                        % f - sp³aszczenie elipsoidy
+Ub = atan((1-f)*tan(fi_B));         % U - szerokoœæ zredukowana(dla danego punktu)
 Uc = atan((1-f)*tan(fi_C));
 
-% L - ró¿nica d³ugoœci na sferze pomocniczej, sigma - odleg³oœæ k¹towa miêdzy punktami na sferze
-L2 = del_lambda;
+del_lambda = lambda_C - lambda_B;
+L2 = del_lambda; % L - ró¿nica d³ugoœci na sferze pomocniczej
 while 1
 L1 = L2;
 sin_sigma = sqrt((cos(Uc)*sin(L2))^2 + (cos(Ub)*sin(Uc)-sin(Ub)*cos(Uc)*cos(L2))^2);
 cos_sigma = sin(Ub)*sin(Uc)+cos(Ub)*cos(Uc)*cos(L2);
-sigma = atan(sin_sigma/cos_sigma);
+sigma = atan(sin_sigma/cos_sigma); %sigma - odleg³oœæ k¹towa miêdzy punktami na sferze
     
 % alfa - azymut linii geodezyjnej na równiku
 sin_alfa = cos(Ub)*cos(Uc)*sin(L2)/sin_sigma;
@@ -61,23 +61,22 @@ L2 = del_lambda+(1-C)*f*sin_alfa*(sigma+C*sin_sigma*(cos2_sigma_m+C*cos_sigma*(-
      break
   end 
 end
+
 u2 = (a^2-b^2)/b^2*cos2_alfa;
 A = 1+u2/16384*(4096+u2*(-768+u2*(320-175*u2)));
 B = u2/1024*(256+u2*(-128+u2*(74-47*u2)));
 
 del_sigma = B*sin_sigma*(cos2_sigma_m+0.25*B*(cos_sigma*(-1+2*(cos2_sigma_m)^2)-1/6*B*cos2_sigma_m*(-3*4*(sin_sigma)^2)*(-3+4*(cos2_sigma_m)^2)));
     
-% s - dlugoœæ lini geodezyjnej, Azbc - azymut prosty, Azcb - azymut odwrotny
-S = b*A*(sigma-del_sigma);
-Azbc = atan(cos(Uc)*sin(L2)/(cos(Ub)*sin(Uc)-sin(Ub)*cos(Uc)*cos(L2)));
-Azcb = atan(cos(Ub)*sin(L2)/(-sin(Ub)*cos(Uc)+cos(Ub)*sin(Uc)*cos(L2)))+pi;
+S = b*A*(sigma-del_sigma);                                                  % S - dlugoœæ lini geodezyjnej
+Azbc = atan(cos(Uc)*sin(L2)/(cos(Ub)*sin(Uc)-sin(Ub)*cos(Uc)*cos(L2)));     % Azbc - azymut prosty
+Azcb = atan(cos(Ub)*sin(L2)/(-sin(Ub)*cos(Uc)+cos(Ub)*sin(Uc)*cos(L2)))+pi; % Azcb - azymut odwrotny
 
 %% algorytm Kivioij
-
-% n - iloœæ odcinków, ds - d³ugoœæ odcinków
+ 
 S =S/2;
-n = round(S/1000);
-ds = S/n;
+n = round(S/1000);  % n - iloœæ odcinków
+ds = S/n;           % ds - d³ugoœæ odcinków
 
 fi_sr = fi_B;
 lambda_sr = lambda_B;
@@ -93,8 +92,8 @@ mac_Az(1) =Azbc_sr;
 
 for i = 1:n
     % 1. obliczmy N i M oraz stala c
-    N = a/(sqrt(1-e2*sin(fi_B)^2));
     M = a*(1-e2)/sqrt((1-e2*sin(fi_B)^2)^3);
+    N = a/(sqrt(1-e2*sin(fi_B)^2));
 
     % 2. obliczamy dfi, dA
     dfi = cos(Azbc)*ds/M;
@@ -113,12 +112,12 @@ for i = 1:n
     dAzbc_pop = sin(Azbc_s)*tan(fi_s)*ds/N_s;
     dlambda_pop = sin(Azbc_s)*ds/(N_s*cos(fi_s));
     
-    % 6. punkty koñcowe
+    % 6. punkty koñcowe (w ostatniej iteracji obliczenie punktu œrodkowego)
     fi_kon = fi_sr+dfi_pop;
     lambda_kon = lambda_sr+dlambda_pop;
     Azbc_kon = Azbc_sr+dAzbc_pop;
     
-    % 7.
+    % 7. 
     fi_sr = fi_kon;
     lambda_sr = lambda_kon;
     Azbc_sr = Azbc_kon;
@@ -131,19 +130,15 @@ end
 mac_fi(n+2) = fi_ss;
 mac_lambda(n+2) = lambda_ss;
 
-mac_p_fi = 0:1;
-mac_p_fi(1) = fi_ss;
-mac_p_fi(2) = fi_sr;
 
-mac_p_lam = 0:1;
-mac_p_lam(1) = lambda_ss;
-mac_p_lam(2) = lambda_sr;
-
-%% obliczenie pola powierzchni tego czworokata
+%% obliczenie pola powierzchni czworokata
 % e - pierwiastek z mimoœrodu
 P = ((b^2)*(lambda_C-lambda_B)/2)*(((sin(fi_C))/(1-(e2)*(sin(fi_C))^2)+(1/(2*(sqrt(e2))))*log((1+(sqrt(e2))*sin(fi_C))/(1-(sqrt(e2))*sin(fi_C)))) - ((sin(fi_B))/(1-(e2)*(sin(fi_B))^2)+(1/(2*(sqrt(e2))))*log((1+(sqrt(e2))*sin(fi_B))/(1-(sqrt(e2))*sin(fi_B)))));   
 
-%% obliczenie roznicy miedzy punktami œrodkowym, a œrednim
+%% obliczenie roznicy miedzy punktami œrodkowym, a punktem œredniej szerokoœci i wyznaczenie azymutów w tych punktach
+% obliczenie: s-dlugoœæ lini geodezyjnej, Azbc-azymut prosty, Azcb-azymut odwrotny
+% korzystamy z algorytmu Vincentego 
+% dane wejœciowe do wspó³rzêdne punktu œredniej szerokoœci i wspó³rzêdne punktu œrodkowego
 
 del_lambda_n = lambda_sr - lambda_ss;
 Ub_n = atan((1-f)*tan(fi_ss));
@@ -184,3 +179,30 @@ Azcb_n = atan(cos(Ub_n)*sin(L2_n)/(-sin(Ub_n)*cos(Uc_n)+cos(Ub_n)*sin(Uc_n)*cos(
 
 Azbc = rad2deg(Azbc);
 Azcb = rad2deg(Azcb);
+
+%% wizualizacja
+
+%pokazanie wszystkich wyznaczonych punktów
+%geoscatter(rad2deg(mac_fi),rad2deg(mac_lambda),5, 'ro');
+
+%pokazanie tylko punktu œredniej szerokoœci i punktu œrodkowego
+mac_p_fi = 0:1;
+mac_p_fi(1) = fi_ss;
+mac_p_fi(2) = fi_sr;
+mac_p_lambda = 0:1;
+mac_p_lambda(1) = lambda_ss;
+mac_p_lambda(2) = lambda_sr;
+%geoscatter(rad2deg(mac_p_fi),rad2deg(mac_p_lambda),10, 'ro');
+
+%% Wnioski
+
+%  Ró¿ñica miêdzy punktem œredniej szerokoœci, a punktem œrodkowym wynosi
+%  tylko 56.836[m]. Punkty s¹ bardzo blisko siebie, wiêc ta wartoœæ jest
+%  ma³a. W przypadku punktów du¿o bardziej od siebie oddalonych ró¿nica
+%  pomiêdzy punktami znacznie wzroœnie.
+
+%  W przypadku wyznaczania najkrótszej odleg³oœæi pomiêdzy dwoma odleg³ymi
+%  punktami trzeba obliczyæ t¹ odleg³oœæ na elipsoidzie. Nie mo¿na wyznaczyæ
+%  tej odleg³oœci za pomoc¹ linii prostej na mapie. Jest to niezbêdna wiedza
+%  przy planowaniu d³ugich trach odbywaj¹cych siê "w linii prostej", np.
+%  tras statków lub samolotów.
