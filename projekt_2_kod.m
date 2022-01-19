@@ -89,9 +89,17 @@ end
 H = 90 - Z;
 
 %wykres zaleznosci wysokosci od czasu;
+%xlabel('h [godziny]');
+%ylabel('H [stopnie]');
+%title('Wykres zale¿noœci wysokoœci do czasu');
+%hold on;
 %plot(h,H);
     
 %wykres zaleznosci azymutu do czasu
+%xlabel('h [godziny]');
+%ylabel('Az [stopnie]');
+%title('Wykres zale¿noœci azymutu do czasu');
+%hold on;
 %plot(h,Az);
 
 
@@ -102,9 +110,7 @@ y = r.*sind(Z).*sind(Az);
 z = r.*cosd(Z);
 
 [xh,yh,zh] = sphere(100);
-
 surf(xh,yh,zh,'FaceAlpha',0.6);
-
 hold on
 plot3(x,y,z,'ro');
 scatter3(x,y,z,44,'r','filled');
