@@ -51,12 +51,12 @@ a = 6378137;
 e2 = 0.00669437999013;
 N = a./(sqrt(1-e2.*sin(m_fi).^2));
 
-%% przechodzimy z fi, lambda, h na x,y,z w GRS80
+%% fi, lambda, h GRS80 -> x,y,z w GRS80
 xGK = (N+h).*cos(m_fi).*cos(m_lambda);
 yGK = (N+h).*cos(m_fi).*sin(m_lambda);
 zGK = (N.*(1-e2)+h).*sin(m_fi);
 
-%% przechodzimy x,y,z w GRS80 na x,y,z Krasowskiego
+%% x,y,z GRS80 -> x,y,z Krasowskiego
 c11 = 0.84076440*10^(-6);
 c12 = 4.08960694*10^(-6);
 c13 = 0.25613907*10^(-6);
@@ -74,7 +74,7 @@ xK = xGK+c11.*xGK+c12.*yGK+c13.*zGK+Tx;
 yK = yGK+c21.*xGK+c22.*yGK+c23.*zGK+Ty;
 zK = zGK+c31.*xGK+c32.*yGK+c33.*zGK+Tz;
 
-%% algorytm Hirvonena przechodzimy z x,y,z Krasowskiego na fi,lambda,h Krasowskiego
+%% algorytm Hirvonena; x,y,z Krasowskiego -> fi,lambda,h Krasowskiego
 
 % 1. r - promien równole¿nika
 r = (xK.^2+yK.^2).^(0.5);
@@ -95,12 +95,14 @@ while 1
     end
     fiK=fiK1;
 end
-% 6. ostateczne wartoœci lambda_o, N_o, h_o
+% 6. ostateczne wartoœci lambda_o,fi_o, h_o
 fi_o = fiK1;
 lambda_o = atan(yK./xK);
-N_o = a./(((1-e2.*((sin(fi_o)).^2))).^(0.5));
 h_o = r./(cos(fi_o))-N_o;
+N_o = a./(((1-e2.*((sin(fi_o)).^2))).^(0.5));
 % 7.kontrola poprawnoœci obliczeñ
 x_o = (N_o+h_o).*(cos(fi_o)).*(cos(lambda_o));
 y_o = (N_o+h_o).*(cos(fi_o)).*(sin(lambda_o));
 z_o = (N_o.*(1-e2)+h_o).*(sin(fi_o));
+
+
